@@ -20,24 +20,22 @@ namespace UX
      */
     void setLEDState(bool state)
     {
-        button_state = state;
         digitalWrite(SYSTEM_UI_LED, state);
-        Serial.println("State set to " + (state) ? "HIGH" : "LOW");
     }
 
     /**
-     * @brief An interrupt-handled function to handle button interactions (and pipe to handlebutton)
+     * @brief An interrupt-handled function to handle button interactions
      */
     void IRAM_ATTR button1Change()
     {
-        setLEDState(digitalRead(SYSTEM_UI_BUTTON_1));
+        button_state = !button_state;
     }
 
     void initUX()
     {
         // Initialize the User Interface
         pinMode(SYSTEM_UI_BUTTON_1, INPUT_PULLUP); // Pull the button pin high
-        attachInterrupt(SYSTEM_UI_BUTTON_1, button1Change, CHANGE);
-        pinMode(SYSTEM_UI_LED, OUTPUT); // Pull the button pin high
+        pinMode(SYSTEM_UI_LED, OUTPUT);            // Set the LED as an output
+        attachInterrupt(SYSTEM_UI_BUTTON_1, button1Change, FALLING);
     }
 }

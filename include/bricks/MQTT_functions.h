@@ -4,6 +4,9 @@
 #include "configs/HARDWARE_config.h"
 #include "configs/OPERATIONS_config.h"
 
+// BRICKS
+#include <bricks/UX.h>
+
 // LIBS
 #include <WiFiClientSecure.h>
 #include <MQTTClient.h>
@@ -14,6 +17,7 @@ using namespace ArduinoJson; // Needed to make ArduinoJson compile 😡
 // The MQTT topics that this device should publish/subscribe
 #define AWS_IOT_PUBLISH_TOPIC "esp32/pub"
 #define AWS_IOT_SUBSCRIBE_TOPIC "esp32/sub"
+#define AWS_IOT_STATES_TOPIC "esp32/states"
 
 namespace MQTT_functions
 {
@@ -33,6 +37,7 @@ namespace MQTT_functions
         serializeJson(doc, jsonBuffer); // print to client
 
         client.publish(AWS_IOT_PUBLISH_TOPIC, jsonBuffer);
+        client.publish(AWS_IOT_STATES_TOPIC, jsonBuffer);
         Serial.println("Message sent...");
     }
 
@@ -40,11 +45,21 @@ namespace MQTT_functions
     {
         Serial.println("incoming: " + topic + " - " + payload);
 
-        StaticJsonDocument<200> doc;
+        StaticJsonDocument<1000> doc;
         deserializeJson(doc, payload);
-        const char *message = doc["message"];
+        const char *message = doc["request"];
         Serial.println(message);
-        // const char *message = doc["message"];
+
+        StaticJsonDocument<600> request_doc;
+        const char *request_name = doc["request"]["device"];
+        Serial.println("Requested device name: " + String(request_name));
+        bool request_state = doc["request"]["state"];
+        Serial.println("Requested state: " + String(request_state));
+
+        if (String(THINGNAME).compareTo(request_name) == 0)
+        {
+            UX::setLEDState(request_state);
+        }
     }
 
     void connectAWS()
@@ -88,6 +103,7 @@ namespace MQTT_functions
 
         // Subscribe to a topic
         client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC);
+        client.subscribe(AWS_IOT_STATES_TOPIC);
 
         Serial.println("");
 
@@ -107,6 +123,7 @@ namespace MQTT_functions
         {
             publishMessage(state);
             prev_state = state;
+            Serial.println("State set to " + String((state)));
         }
         client.loop();
     }
