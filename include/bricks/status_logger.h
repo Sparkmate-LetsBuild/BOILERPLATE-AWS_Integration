@@ -250,7 +250,6 @@ namespace StatusLogger
         log(LEVEL_STATS, StatusLogger::NAME_ESP32, String(EOL) + "-- SESSION DETAILS --", true);
         log(LEVEL_STATS, StatusLogger::NAME_ESP32, "Device ID: " + session_details.device_ID, true);
         log(LEVEL_STATS, StatusLogger::NAME_ESP32, "Session name: " + session_details.session_ID, true);
-        log(LEVEL_STATS, StatusLogger::NAME_ESP32, "Session file: " + SESSION_FILE_NAME, true);
         log(LEVEL_STATS, StatusLogger::NAME_ESP32, "Session start time: " + String(session_details.session_start_time), true);
         log(LEVEL_STATS, StatusLogger::NAME_ESP32, "-- END OF SESSION DETAILS --");
     }

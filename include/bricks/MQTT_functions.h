@@ -8,6 +8,7 @@
 #include <WiFiClientSecure.h>
 #include <MQTTClient.h>
 #include <ArduinoJson.h>
+using namespace ArduinoJson; // Needed to make ArduinoJson compile 😡
 #include "WiFi.h"
 
 // The MQTT topics that this device should publish/subscribe
@@ -19,26 +20,31 @@ namespace MQTT_functions
     WiFiClientSecure net = WiFiClientSecure();
     MQTTClient client = MQTTClient(256);
 
-    void publishMessage()
+    void publishMessage(bool state_to_send)
     {
-        StaticJsonDocument<200> doc;
+        DynamicJsonDocument doc(1000);
         doc["time"] = millis();
-        doc["sensor_a0"] = "Hiiiii";
-        char jsonBuffer[512];
+        doc["sensor_id"] = THINGNAME;
+        JsonObject doc_request = doc.createNestedObject("request");
+        doc_request["device"] = OTHER_THINGNAME;
+        doc_request["state"] = state_to_send;
+
+        char jsonBuffer[1024];
         serializeJson(doc, jsonBuffer); // print to client
 
-        Serial.println("Message sent...");
-
         client.publish(AWS_IOT_PUBLISH_TOPIC, jsonBuffer);
+        Serial.println("Message sent...");
     }
 
     void messageHandler(String &topic, String &payload)
     {
         Serial.println("incoming: " + topic + " - " + payload);
 
-        //  StaticJsonDocument<200> doc;
-        //  deserializeJson(doc, payload);
-        //  const char* message = doc["message"];
+        StaticJsonDocument<200> doc;
+        deserializeJson(doc, payload);
+        const char *message = doc["message"];
+        Serial.println(message);
+        // const char *message = doc["message"];
     }
 
     void connectAWS()
@@ -53,6 +59,7 @@ namespace MQTT_functions
             delay(500);
             Serial.print(".");
         }
+        Serial.println("");
 
         // Configure WiFiClientSecure to use the AWS IoT device credentials
         net.setCACert(AWS_CERT_CA);
@@ -82,6 +89,8 @@ namespace MQTT_functions
         // Subscribe to a topic
         client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC);
 
+        Serial.println("");
+
         Serial.println("AWS IoT Connected!");
     }
 
@@ -91,9 +100,14 @@ namespace MQTT_functions
         connectAWS();
     }
 
-    void each_loop()
+    bool prev_state = false;
+    void each_loop(bool state)
     {
-        publishMessage();
+        if (prev_state != state)
+        {
+            publishMessage(state);
+            prev_state = state;
+        }
         client.loop();
     }
 }

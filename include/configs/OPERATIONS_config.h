@@ -14,7 +14,8 @@
 #define GNSS_FREQ 1            // in Hz
 
 // Define constants
-#define THINGNAME "matts_eps32" // we no longer set this value automatically.
+#define THINGNAME "matts_esp32" // we no longer set this value automatically.
+#define OTHER_THINGNAME "matts_other_esp32"
 #include <configs/secrets/matts_esp32.h>
 
 #ifndef ENVIRONMENT

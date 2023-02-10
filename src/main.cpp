@@ -9,6 +9,6 @@ void setup()
 
 void loop()
 {
-    MQTT_functions::each_loop();
-    delay(1000);
+    MQTT_functions::each_loop(UX::button_state);
+    delay(200);
 }

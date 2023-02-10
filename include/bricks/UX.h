@@ -11,6 +11,8 @@
 
 namespace UX
 {
+    bool button_state = false;
+
     /**
      * @brief Set the LED's state (as a bool, topic will be sent to later)
      *
@@ -18,7 +20,9 @@ namespace UX
      */
     void setLEDState(bool state)
     {
-        digitalWrite(SYSTEM_UI_LED, HIGH);
+        button_state = state;
+        digitalWrite(SYSTEM_UI_LED, state);
+        Serial.println("State set to " + (state) ? "HIGH" : "LOW");
     }
 
     /**
