@@ -1,8 +1,10 @@
-#include "MQTT_functions.h"
+#include <bricks/MQTT_functions.h>
+#include <bricks/UX.h>
 
 void setup()
 {
     MQTT_functions::setup();
+    UX::initUX();
 }
 
 void loop()
