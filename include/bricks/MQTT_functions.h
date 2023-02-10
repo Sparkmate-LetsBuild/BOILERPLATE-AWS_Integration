@@ -15,51 +15,53 @@ using namespace ArduinoJson; // Needed to make ArduinoJson compile 😡
 #include "WiFi.h"
 
 // The MQTT topics that this device should publish/subscribe
-#define AWS_IOT_PUBLISH_TOPIC "esp32/pub"
-#define AWS_IOT_SUBSCRIBE_TOPIC "esp32/sub"
-#define AWS_IOT_STATES_TOPIC "esp32/states"
+#define AWS_IOT_PREFIX "$aws/things/"
+#define AWS_IOT_PUBLISH_TOPIC "/shadow/update"
+#define AWS_IOT_SUBSCRIBE_TOPIC "/shadow/update/delta"
+
+enum MESSAGE_TYPE
+{
+    REPORTED,
+    DESIRED
+};
 
 namespace MQTT_functions
 {
     WiFiClientSecure net = WiFiClientSecure();
     MQTTClient client = MQTTClient(256);
 
-    void publishMessage(bool state_to_send)
+    void publishMessage(bool state_to_send, MESSAGE_TYPE reported_desired)
     {
         DynamicJsonDocument doc(1000);
-        doc["time"] = millis();
-        doc["sensor_id"] = THINGNAME;
-        JsonObject doc_request = doc.createNestedObject("request");
-        doc_request["device"] = OTHER_THINGNAME;
-        doc_request["state"] = state_to_send;
+        JsonObject doc_status = doc.createNestedObject("state");
+        String nest_payload = "reported";
+        if (reported_desired == DESIRED) {
+            nest_payload = "desired";
+        }
+        JsonObject doc_status_reported = doc_status.createNestedObject(nest_payload);
+        doc_status_reported["status"] = state_to_send;
 
         char jsonBuffer[1024];
         serializeJson(doc, jsonBuffer); // print to client
 
-        client.publish(AWS_IOT_PUBLISH_TOPIC, jsonBuffer);
-        client.publish(AWS_IOT_STATES_TOPIC, jsonBuffer);
-        Serial.println("Message sent...");
+        client.publish(String(AWS_IOT_PREFIX) + String(THINGNAME) + String(AWS_IOT_PUBLISH_TOPIC), jsonBuffer);
+        // client.publish(AWS_IOT_STATES_TOPIC, jsonBuffer);
+        Serial.print("Sending: ");
+        Serial.println(jsonBuffer);
     }
 
-    void messageHandler(String &topic, String &payload)
+    void messageHandler(String & topic, String & payload)
     {
         Serial.println("incoming: " + topic + " - " + payload);
+        StaticJsonDocument<1024> sensor_doc;
+        DeserializationError error_sensor = deserializeJson(sensor_doc, payload);
+        Serial.println(payload);
+        bool sensor = sensor_doc["state"]["status"];
 
-        StaticJsonDocument<1000> doc;
-        deserializeJson(doc, payload);
-        const char *message = doc["request"];
-        Serial.println(message);
-
-        StaticJsonDocument<600> request_doc;
-        const char *request_name = doc["request"]["device"];
-        Serial.println("Requested device name: " + String(request_name));
-        bool request_state = doc["request"]["state"];
-        Serial.println("Requested state: " + String(request_state));
-
-        if (String(THINGNAME).compareTo(request_name) == 0)
-        {
-            UX::setLEDState(request_state);
-        }
+        Serial.print("This light should now be: ");
+        Serial.println(sensor);
+        UX::setLEDState(sensor);
+        publishMessage(sensor, REPORTED);
     }
 
     void connectAWS()
@@ -102,8 +104,7 @@ namespace MQTT_functions
         }
 
         // Subscribe to a topic
-        client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC);
-        client.subscribe(AWS_IOT_STATES_TOPIC);
+        client.subscribe(String(AWS_IOT_PREFIX) + String(THINGNAME) + String(AWS_IOT_SUBSCRIBE_TOPIC));
 
         Serial.println("");
 
@@ -121,7 +122,7 @@ namespace MQTT_functions
     {
         if (prev_state != state)
         {
-            publishMessage(state);
+            publishMessage(state, DESIRED);
             prev_state = state;
             Serial.println("State set to " + String((state)));
         }
