@@ -1,5 +1,10 @@
-#include "configs/secrets.h"
+#pragma once
+
+// CONFIGS
 #include "configs/HARDWARE_config.h"
+#include "configs/OPERATIONS_config.h"
+
+// LIBS
 #include <WiFiClientSecure.h>
 #include <MQTTClient.h>
 #include <ArduinoJson.h>

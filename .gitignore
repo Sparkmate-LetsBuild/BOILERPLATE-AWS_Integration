@@ -22,3 +22,6 @@ debug_logs/*
 
 release.tmp
 dev_release.tmp
+
+*secrets*
+tmp/*

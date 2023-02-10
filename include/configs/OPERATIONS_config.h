@@ -14,15 +14,9 @@
 #define GNSS_FREQ 1            // in Hz
 
 // Define constants
-#ifndef MONITOR_BOX_ID
-#define MONITOR_BOX_ID "testing" // we no longer set this value automatically.
-#endif
+#define THINGNAME "matts_eps32" // we no longer set this value automatically.
+#include <configs/secrets/matts_esp32.h>
 
 #ifndef ENVIRONMENT
 #define ENVIRONMENT "UNKNOWN"
 #endif
-
-// GLOBAL VARIABLES
-String SESSION_FILE_NAME;
-bool DATA_UPLOAD_ENABLED = true;
-bool NO_SNIFF_JUST_UPLOAD = false;
