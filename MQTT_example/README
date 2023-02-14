@@ -1,0 +1,17 @@
+Use this example to have MQTT communication from a device to AWS back to the device.
+
+**Device to device operation**
+
+- Device has a button that sends a `DESIRED` state message to the AWS server.
+- If the device button's state is now different to the recorded state, AWS issues a `delta` message with the required change for the light.
+- The device listens on this topic, setting the light's status to whatever is published on the `delta` topic.
+
+**Webplatform to device operation**
+
+- When the on/off buttons are pressed on the webplatform, the `DESIRED` state of the device changes on the AWS server, which in turn emit a new `delta` message.
+- The device is still listening on this `delta` topic, so sees the change and changes the light to on/off.
+
+**Device to webplatform operation**
+
+- When the `delta` messages are emitted from AWS to the device, the webplatform is also subscribed to this topic so is able to see the changes.
+- These changes are reflected by the emojis in the webplatform.
