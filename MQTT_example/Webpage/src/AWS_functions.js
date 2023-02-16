@@ -33,7 +33,7 @@ import axios from "axios";
  * Declare the Things that we will use.
  * TODO this could be a function that loops through all Things on IoT Core and we generate this list dynamically.
  */
-export const THING_NAMES = [
+export const thingNames = [
   {
     id: "matts_esp32",
   },

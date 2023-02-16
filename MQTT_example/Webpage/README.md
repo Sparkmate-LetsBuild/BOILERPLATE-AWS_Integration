@@ -69,6 +69,5 @@ def lambda_handler(event, context):
 
 ## Running
 
-- Ensure you have node.js installed
-- in the [./Webpage](.) folder run `npm i` to install dependencies
-- then run `npm run dev` to run the server.
+- Ensure you have [node.js](https://nodejs.org/en/download/) and [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable) installed
+- then run `yarn run dev` to run the server.

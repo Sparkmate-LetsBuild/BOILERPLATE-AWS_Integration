@@ -7,13 +7,13 @@ import sparkIcon from "./assets/sparkIcon.png";
 import "./App.css";
 
 import {
-  THING_NAMES,
+  thingNames,
   getRequestThingState,
   postRequestThingState,
 } from "./AWS_functions";
 
 function App() {
-  const [things, setThings] = useState(THING_NAMES);
+  const [things, setThings] = useState(thingNames);
 
   /**
    * Uses getRequestThingState to retrieve the "actual" state of the button from AWS,

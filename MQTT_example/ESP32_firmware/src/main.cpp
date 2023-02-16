@@ -14,7 +14,7 @@
 void setup()
 {
     // Begin core systems
-    Serial.begin(Serial_Mon_Baud);
+    Serial.begin(SERIAL_MON_BAUD);
     UX::initUX();
 
     // Begin firmware reporting
@@ -28,6 +28,6 @@ void loop()
 {
 
     // Setup the board for normal operations -- These are verbosely ordered tasks
-    MQTT_functions::each_loop(UX::button_state);
+    MQTT_functions::eachLoop(UX::button_state);
     delay(200);
 }

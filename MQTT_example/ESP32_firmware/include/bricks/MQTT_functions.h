@@ -149,7 +149,7 @@ namespace MQTT_functions
      *
      * @param state Your state monitor -> likely a button or some sensor.
      */
-    void each_loop(bool state)
+    void eachLoop(bool state)
     {
         if (prev_state != state)
         {

@@ -7,4 +7,4 @@
 #define SYSTEM_UI_LED 13 // Used to control whether or not we will bother uploading this data
 
 // Board
-#define Serial_Mon_Baud 115200 // Baud rate for communicating between Arduino and PC
+#define SERIAL_MON_BAUD 115200 // Baud rate for communicating between Arduino and PC
