@@ -1,11 +1,15 @@
 # AWS IoT and OTA on the ESP32
 _⚡ a Sparkmate Let's Build boiler-plate ⚡_
 
-# _To Do_
+This is a collection of different AWS boilerplates. You should be able to mix and match them as you see fit for your projects.
 
-A combination of:
-- https://aws.amazon.com/blogs/compute/building-an-aws-iot-core-device-using-aws-serverless-and-an-esp32/
-- https://catalog.us-east-1.prod.workshops.aws/workshops/5b127b2f-f879-48b9-9dd0-35aff98c7bbc/en-US
+Each boilerplate has it's own README, we recommend you explore each of these to see what you can do with AWS!
+
+Most boilerplates will include a combination of:
+
+- ESP32 as our microcontroller + peripherals
+- Website/web-server for a secondary interface
+- the AWS IoT core platform
 
 # The Sparkmate Let's Build open source policy
 

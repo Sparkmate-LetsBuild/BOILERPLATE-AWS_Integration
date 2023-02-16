@@ -21,7 +21,7 @@
   }
 }
 .logo.spark {
-  animation: logo-spin infinite 1s linear;
+  animation: logo-spin infinite 10s linear;
 }
 
 .logo.spark:hover {
